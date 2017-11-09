@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <h1 id="subTitle" class="mui-title">标题</h1>
+		</header>
+		<script type="text/javascript" src="../js/jquery-2.1.0.js" ></script>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			if(mui.os.plus){
+				mui.plusReady(function(){
+					var self = plus.webview.currentWebview();
+					mui.toast(self.subUrl);
+				})
+			}else{
+				var subUrl = localStorage.getItem('subUrl');
+				var subTitle = localStorage.getItem('subTitle');
+				mui.toast(subUrl);
+				//alert(subTitle);
+			};
+			
+			$('#subTitle').text(subTitle);
+		</script>
+	</body>
+
+</html>

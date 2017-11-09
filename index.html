@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.mui-bg {
+				background: #fff;
+			}
+		</style>
+	</head>
+
+	<body id="app">
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">{{title}}</h1>
+		</header>
+		<nav class="mui-bar mui-bar-tab mui-bg">
+			<a v-for="item in tabbar" class="mui-tab-item" v-bind:class="{'mui-active': $index === initIndex}" v-bind:href="item.url" v-on:tap="tab($index)">
+				<span class="mui-icon mui-icon-{{item.icon}}"></span>
+				<span class="mui-tab-label">{{item.title}}</span>
+			</a>
+		</nav>
+		<!--下拉刷新容器-->
+		<div class="mui-content">
+
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/vue.min.js"></script>
+		<script type="text/javascript" src="js/mui-vue.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			var app = new Vue({
+				el: '#app',
+				data: {
+					title: '首页',
+					initIndex: 0,
+					activeTab: 'home.html',
+					tabbar: [{
+						icon: 'home',
+						title: '首页',
+						url: 'html/home.html',
+					}, {
+						icon: 'phone',
+						title: '电话',
+						url: 'html/phone.html'
+					}, {
+						icon: 'email',
+						title: '邮件',
+						url: 'html/email.html'
+					}, {
+						icon: 'gear',
+						title: '设置',
+						url: 'html/setting.html'
+					}],
+					subStyle: {
+						top: '44px',
+						bottom: '51px'
+					}
+				},
+				ready: function() {
+					mui.init();
+					var self = this;
+					if(mui.os.plus) {
+						mui.plusReady(function() {
+							var curWs = plus.webview.currentWebview();
+							for(var i = 0; i < self.tabbar.length; i++) {
+								var subUrl = self.tabbar[i].url;
+								var subWs = plus.webview.create(subUrl, subUrl, self.subStyle);
+								if(i != self.initIndex) {
+									subWs.hide();
+								}
+								curWs.append(subWs);
+							}
+						})
+					} else {
+						createIframe('.mui-content', {
+							url: self.tabbar[self.initIndex].url,
+							style: self.subStyle
+						})
+					}
+				},
+				methods: {
+					tab: function(index) {
+
+						var targetTab = this.tabbar[index].url;
+						this.title = this.tabbar[index].title;
+
+						if(mui.os.plus) {
+							//隐藏当前webview
+							plus.webview.hide(this.activeTab);
+							//显示目标webview
+							plus.webview.show(targetTab);
+							//更改当前选项卡
+							this.activeTab = targetTab;
+						} else {
+							createIframe('mui-active', {
+								url: targetTab,
+								style: this.subStyle
+							})
+						}
+					}
+				}
+			});
+			
+			
+		</script>
+	</body>
+
+</html>
